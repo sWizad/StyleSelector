@@ -38,9 +38,9 @@ def read_sdxl_styles(json_data):
     return names
 
 
-def getStyles():
+def getStyles(json_link = 'sdxl_styles.json'):
     global stylespath
-    json_path = os.path.join(scripts.basedir(), 'sdxl_styles.json')
+    json_path = os.path.join(scripts.basedir(), json_link)
     stylespath = json_path
     json_data = get_json_content(json_path)
     styles = read_sdxl_styles(json_data)
@@ -119,21 +119,23 @@ class StyleSelectorXL(scripts.Script):
         return scripts.AlwaysVisible
 
     def ui(self, is_img2img):
-        enabled = getattr(shared.opts, "enable_styleselector_by_default", True)
+        #enabled = getattr(shared.opts, "enable_styleselector_by_default", False)
+        enabled = False
         with gr.Group():
             with gr.Accordion("SDXL Styles", open=enabled):
                 with FormRow():
                     with FormColumn(min_width=160):
                         is_enabled = gr.Checkbox(
-                            value=enabled, label="Enable Style Selector", info="Enable Or Disable Style Selector ")
+                            value=False, label="Enable Style Selector", info="Enable Or Disable Style Selector ")
+
+                #with FormRow():
+                with gr.Accordion("Random", open=False):
                     with FormColumn(elem_id="Randomize Style"):
                         randomize = gr.Checkbox(
                             value=False, label="Randomize Style", info="This Will Override Selected Style")
                     with FormColumn(elem_id="Randomize For Each Iteration"):
                         randomizeEach = gr.Checkbox(
                             value=False, label="Randomize For Each Iteration", info="Every prompt in Batch Will Have Random Style")
-
-                with FormRow():
                     with FormColumn(min_width=160):
                         allstyles = gr.Checkbox(
                             value=False, label="Generate All Styles In Order", info="To Generate Your Prompt in All Available Styles, Its Better to set batch count to " + str(len(self.styleNames)) + " ( Style Count)")
